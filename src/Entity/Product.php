@@ -124,4 +124,9 @@ class Product
         $metadata->addPropertyConstraint('price', new Assert\Type(Price::class));
         $metadata->addPropertyConstraint('images', new Assert\NotNull());
     }
+
+    public function __toString(): string
+    {
+        return  (string) $this->name;
+    }
 }

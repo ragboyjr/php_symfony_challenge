@@ -1,0 +1,11 @@
+easy_admin:
+    entities:
+        # List the entity class name you want to manage
+        - App\Entity\Product
+        - App\Entity\Catalog
+    site_name: Php Challenge
+    design:
+        menu:
+            - { route: 'homepage', label: 'Back to the website', icon: 'home' }
+            - { entity: 'Catalog', label: 'Catalogs', icon: 'archive' }
+            - { entity: 'Product', label: 'Products', icon: 'tshirt' }
