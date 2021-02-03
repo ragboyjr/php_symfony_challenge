@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PriceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=PriceRepository::class)
@@ -19,11 +20,13 @@ class Price
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank
      */
     private $amount;
 
     /**
      * @ORM\Column(type="string", length=3)
+     * @Assert\NotBlank
      */
     private $currency;
 

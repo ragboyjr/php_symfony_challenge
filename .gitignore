@@ -46,8 +46,8 @@
 /vendor/
 
 # Assets and user uploads
-/web/bundles/
-/web/uploads/
+/public/uploads/*
+/public/downloads/*
 
 # PHPUnit
 /app/phpunit.xml
@@ -67,3 +67,8 @@
 
 .idea
 .DS_Store
+###> symfony/phpunit-bridge ###
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###

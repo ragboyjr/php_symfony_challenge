@@ -1,0 +1,19 @@
+framework:
+    workflows:
+        catalog:
+            type: state_machine
+            audit_trail:
+                enabled: "%kernel.debug%"
+            marking_store:
+                type: 'method'
+                property: 'state'
+            supports:
+                - App\Entity\Catalog
+            initial_marking: submitted
+            places:
+                - submitted
+                - imported
+            transitions:
+                handle:
+                    from: submitted
+                    to:   imported

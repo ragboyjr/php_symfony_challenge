@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    catalogsDir:  "%kernel.project_dir%/public/uploads/catalogs"
+    ftpDir: "%kernel.project_dir%/public/downloads/catalogs"
 
 services:
     # default configuration for services in *this* file
@@ -17,11 +19,14 @@ services:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
+    App\Service\CatalogManager:
+        arguments:
+            $catalogsDir: "%catalogsDir%"
+
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
-
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

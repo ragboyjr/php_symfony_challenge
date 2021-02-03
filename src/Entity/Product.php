@@ -22,23 +22,27 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $styleNumber;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
      * @ORM\Column(type="array")
+     * @Assert\NotBlank
      */
     private $images = [];
 
 
     /**
-     * @ORM\ManyToOne(targetEntity=Price::class)
+     * @ORM\ManyToOne(targetEntity=Price::class, cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank
      */
     private $price;
 
