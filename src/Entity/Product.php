@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -38,6 +41,24 @@ class Product
      * @ORM\JoinColumn(nullable=false)
      */
     private $price;
+
+    /**
+     * For JsonResponse purpose
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'id' => $this->getId(),
+            'styleNumber' => $this->getStyleNumber(),
+            'name' => $this->getName(),
+            'price' => [
+                'amount' => $this->getPrice()->getAmount(),
+                'currency' => $this->getPrice()->getCurrency()
+            ],
+            'images' => $this->getImages()
+        ];
+    }
 
     public function getId(): ?int
     {
@@ -90,5 +111,17 @@ class Product
         $this->price = $price;
 
         return $this;
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addConstraint(new UniqueEntity([
+            'fields' => 'styleNumber',
+        ]));
+        $metadata->addPropertyConstraint('name', new Assert\NotNull());
+        $metadata->addPropertyConstraint('styleNumber', new Assert\NotNull());
+        $metadata->addPropertyConstraint('price', new Assert\NotNull());
+        $metadata->addPropertyConstraint('price', new Assert\Type(Price::class));
+        $metadata->addPropertyConstraint('images', new Assert\NotNull());
     }
 }
