@@ -5,13 +5,6 @@
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 ###< symfony/framework-bundle ###
-
-###> phpunit/phpunit ###
-/phpunit.xml
-.phpunit.result.cache
-###< phpunit/phpunit ###
-
-
 # Cache and logs (Symfony2)
 /app/cache/*
 /app/logs/*
@@ -67,13 +60,12 @@
 
 .idea
 .DS_Store
+###> symfony/web-server-bundle ###
+/.web-server-pid
+###< symfony/web-server-bundle ###
 
 ###> symfony/phpunit-bridge ###
 .phpunit
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
-
-###> symfony/web-server-bundle ###
-/.web-server-pid
-###< symfony/web-server-bundle ###

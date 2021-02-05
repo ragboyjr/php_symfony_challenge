@@ -24,6 +24,8 @@ class ConversorManagerTest extends KernelTestCase
         $this->entityManager = $kernel->getContainer()
             ->get('doctrine')
             ->getManager();
+
+        parent::setUp();
     }
 
     /**
@@ -73,6 +75,6 @@ class ConversorManagerTest extends KernelTestCase
         $response = $conversorManager->convertProductPrice($product, 'USD');
 
         //assert
-        $this->assertGreaterThan($priceEur ,$response);
+        $this->assertGreaterThan($priceEur, $response);
     }
 }

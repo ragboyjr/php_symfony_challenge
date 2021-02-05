@@ -43,6 +43,8 @@ class CatalogManagerTest extends KernelTestCase
         $this->catalog->setFilePath('catalog1.json');
         $this->entityManager->persist($this->catalog);
         $this->entityManager->flush();
+
+        parent::setUp();
     }
 
     /**
@@ -85,8 +87,6 @@ class CatalogManagerTest extends KernelTestCase
 
     public function tearDown(): void
     {
-        parent::tearDown();
-
         $this->entityManager->clear();
 
         //unlink generated csv
@@ -100,5 +100,7 @@ class CatalogManagerTest extends KernelTestCase
 
         $this->entityManager->remove($this->catalog);
         $this->entityManager->flush();
+
+        parent::tearDown();
     }
 }
