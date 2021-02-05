@@ -35,3 +35,7 @@ services:
             - { name: kernel.event_listener, event: easy_admin.pre_remove }
             - { name: kernel.event_listener, event: easy_admin.post_persist }
             - { name: kernel.event_listener, event: easy_admin.pre_persist }
+
+    catalog_manager:
+        class: App\Service\CatalogManager
+        public: true

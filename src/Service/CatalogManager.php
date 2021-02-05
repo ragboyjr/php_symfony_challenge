@@ -111,4 +111,20 @@ class CatalogManager
 
         return false;
     }
+
+    /**
+     * @return string
+     */
+    public function getCatalogsDir()
+    {
+        return $this->catalogsDir;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFtpDir()
+    {
+        return $this->ftpDir;
+    }
 }
