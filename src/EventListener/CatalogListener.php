@@ -37,8 +37,9 @@ class CatalogListener
         $this->catalogsDir = $catalogsDir;
     }
 
-    public function onEasyAdminPrePersist(GenericEvent $event){
-        if (!file_exists($this->catalogsDir)){
+    public function onEasyAdminPrePersist(GenericEvent $event)
+    {
+        if (!file_exists($this->catalogsDir)) {
             mkdir($this->catalogsDir, 0777);
         }
     }

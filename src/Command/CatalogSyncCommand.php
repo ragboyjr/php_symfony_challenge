@@ -59,7 +59,7 @@ class CatalogSyncCommand extends Command
         $catalogs = $this->catalogRepository->findBy(array('state' => Catalog::IMPORTED_STATE));
 
         $count = count($catalogs);
-        foreach ($catalogs as $catalog){
+        foreach ($catalogs as $catalog) {
             //export csv and change state to synced
         }
 

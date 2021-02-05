@@ -42,7 +42,7 @@ class CatalogMessageHandler implements MessageHandlerInterface
             //handle json file and import products
             $handled = $this->catalogManager->handle($catalog);
             if ($handled) { //handling ok, change state to 'imported'
-                $this->workflow->apply($catalog,  'handle');
+                $this->workflow->apply($catalog, 'handle');
                 $this->entityManager->flush();
                 $this->bus->dispatch($message);
             }
@@ -51,11 +51,10 @@ class CatalogMessageHandler implements MessageHandlerInterface
             $synced = $this->catalogManager->export($catalog);
 
             if ($synced) { //handling ok, change state to 'imported'
-                $this->workflow->apply($catalog,  'sync');
+                $this->workflow->apply($catalog, 'sync');
                 $this->entityManager->flush();
                 $this->bus->dispatch($message);
             }
-
         } elseif ($this->logger) {
             $this->logger->debug('Dropping catalog message', ['catalog' => $catalog->getId(), 'state' => $catalog->getState()]);
         }

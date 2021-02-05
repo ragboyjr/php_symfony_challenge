@@ -187,7 +187,7 @@ class Catalog
     public function setFile(?File $file): self
     {
         $this->file = $file;
-        if($file){
+        if ($file) {
             $this->updatedAt = new \DateTime();
         }
         return $this;
