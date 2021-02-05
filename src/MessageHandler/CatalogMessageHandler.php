@@ -38,6 +38,8 @@ class CatalogMessageHandler implements MessageHandlerInterface
             return;
         }
         $this->logger->debug($this->workflow->can($catalog, 'handle'));
+        $this->logger->debug($this->workflow->can($catalog, 'sync'));
+
         if ($this->workflow->can($catalog, 'handle')) {
             //handle json file and import products
             $handled = $this->catalogManager->handle($catalog);
@@ -50,7 +52,7 @@ class CatalogMessageHandler implements MessageHandlerInterface
             //export products to csv in order to be synced by sftp
             $synced = $this->catalogManager->export($catalog);
 
-            if ($synced) { //handling ok, change state to 'imported'
+            if ($synced) { //sync ok, change state to 'synced'
                 $this->workflow->apply($catalog, 'sync');
                 $this->entityManager->flush();
                 $this->bus->dispatch($message);

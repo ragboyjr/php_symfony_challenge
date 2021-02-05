@@ -4,7 +4,6 @@ namespace App\Command;
 use App\Entity\Catalog;
 use App\Message\CatalogMessage;
 use App\Repository\CatalogRepository;
-use App\Service\CatalogManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,15 +23,12 @@ class CatalogImportCommand extends Command
      */
     private $bus;
 
-    private $manager;
-
     protected static $defaultName = 'app:catalog:import';
 
-    public function __construct(CatalogRepository $catalogRepository, MessageBusInterface $bus, CatalogManager $manager)
+    public function __construct(CatalogRepository $catalogRepository, MessageBusInterface $bus)
     {
         $this->catalogRepository = $catalogRepository;
         $this->bus = $bus;
-        $this->manager = $manager;
         parent::__construct();
     }
 
@@ -58,7 +54,7 @@ class CatalogImportCommand extends Command
                 $io->error('An Exception has ocurred: '. $e->getMessage(), ['catalog' => $catalog->getId(), 'state' => $catalog->getState()]);
             }
         }
-        
+
         $io->success(sprintf('Imported "%d" catalogs.', $count));
 
         return 0;

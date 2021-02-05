@@ -37,6 +37,7 @@ class CatalogManager
             //get file contents
             if (file_exists($path)) {
                 $jsonData = json_decode(file_get_contents($path), true);
+
                 //iterate array elements an add new product each
                 foreach ($jsonData as $x => $row) {
                     $product = new Product();
@@ -45,16 +46,16 @@ class CatalogManager
                     $price = new Price();
                     $price->setCurrency($row['price']['currency']);
                     $price->setAmount($row['price']['amount']);
+                    $product->setPrice($price);
 
                     //If product have a diferent currency than USD convert do proccess convertion
                     if ($price->getCurrency() != 'USD') {
-                        $price->setAmount($this->conversorManager->convertPrice($price, 'USD'));
+                        $price->setAmount($this->conversorManager->convertProductPrice($product, 'USD'));
                         $price->setCurrency('USD');
                     }
 
                     $this->entityManager->persist($price);
 
-                    $product->setPrice($price);
                     $product->setImages($row['images']);
                     $catalog->addProduct($product);
 
