@@ -12,16 +12,18 @@ use App\Service\ConversorManager;
 class CatalogManager
 {
     private $catalogsDir;
+    private $ftpDir;
     private $logger;
     private $entityManager;
     private $conversorManager;
 
-    public function __construct(string $catalogsDir, LoggerInterface $logger = null, EntityManagerInterface $entityManager, ConversorManager $conversorManager)
+    public function __construct(string $catalogsDir, string $ftpDir, LoggerInterface $logger = null, EntityManagerInterface $entityManager, ConversorManager $conversorManager)
     {
         $this->catalogsDir = $catalogsDir;
         $this->logger = $logger;
         $this->entityManager = $entityManager;
         $this->conversorManager = $conversorManager;
+        $this->ftpDir = $ftpDir;
     }
 
     /**
@@ -83,6 +85,25 @@ class CatalogManager
     public function export(Catalog $catalog): bool
     {
         try {
+            if (!file_exists($this->ftpDir)) {
+                mkdir($this->ftpDir, 0777);
+            }
+
+            $handle = fopen($this->ftpDir.'/'.$catalog->getId().'.csv', 'w');
+
+            // Find all catalog products to export
+            $products = $catalog->getProducts();
+
+            // Iterate products
+            $csv = "";
+
+            foreach ($products as $product) {
+                $csv.= implode(",", array_values($product->toArray()))."\n"; // The fields to be displayed
+            }
+
+            fwrite($handle, $csv);
+            fclose($handle);
+
             return true;
         } catch (\Exception $e) {
             $this->logger->error('An Exception has ocurred: '. $e->getMessage(), ['catalog' => $catalog->getId(), 'state' => $catalog->getState()]);

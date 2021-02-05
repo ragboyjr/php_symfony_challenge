@@ -2,8 +2,8 @@
 namespace App\Command;
 
 use App\Entity\Catalog;
+use App\Message\CatalogMessage;
 use App\Repository\CatalogRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -23,25 +23,12 @@ class CatalogSyncCommand extends Command
      */
     private $bus;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * @var string
-     */
-    private $catalogsDir;
-
     protected static $defaultName = 'app:catalog:sync';
 
-    public function __construct(string $catalogsDir, CatalogRepository $catalogRepository, EntityManagerInterface $entityManager, MessageBusInterface $bus)
+    public function __construct(CatalogRepository $catalogRepository, MessageBusInterface $bus)
     {
         $this->catalogRepository = $catalogRepository;
-        $this->catalogsDir = $catalogsDir;
         $this->bus = $bus;
-        $this->entityManager = $entityManager;
-
         parent::__construct();
     }
 
@@ -61,6 +48,11 @@ class CatalogSyncCommand extends Command
         $count = count($catalogs);
         foreach ($catalogs as $catalog) {
             //export csv and change state to synced
+            try {
+                $this->bus->dispatch(new CatalogMessage($catalog->getId()));
+            } catch (\Exception $e) {
+                $io->error('An Exception has ocurred: '. $e->getMessage(), ['catalog' => $catalog->getId(), 'state' => $catalog->getState()]);
+            }
         }
 
         $io->success(sprintf('Synced "%d" catalogs.', $count));

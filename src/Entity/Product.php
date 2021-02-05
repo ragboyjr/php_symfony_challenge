@@ -52,16 +52,18 @@ class Product
      */
     public function toArray()
     {
-        return [
+        $product =  [
             'id' => $this->getId(),
             'styleNumber' => $this->getStyleNumber(),
             'name' => $this->getName(),
-            'price' => [
-                'amount' => $this->getPrice()->getAmount(),
-                'currency' => $this->getPrice()->getCurrency()
-            ],
-            'images' => $this->getImages()
+            'price' => $this->getPrice()->getCurrency().$this->getPrice()->getAmount(),
         ];
+
+        foreach ($this->getImages() as $x => $image) {
+            $product['image'.$x] = $image;
+        }
+
+        return $product;
     }
 
     public function getId(): ?int
