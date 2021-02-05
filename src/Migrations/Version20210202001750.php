@@ -28,6 +28,9 @@ final class Version20210202001750 extends AbstractMigration
         $this->addSql('CREATE TABLE catalog (id INT AUTO_INCREMENT NOT NULL, file_path VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE catalog ADD state VARCHAR(255)');
         $this->addSql('ALTER TABLE catalog CHANGE state state VARCHAR(255) DEFAULT \'submitted\' NOT NULL');
+        $this->addSql('CREATE TABLE catalog_products (catalog_id INT NOT NULL, product_id INT NOT NULL, INDEX IDX_816D8444CC3C66FC (catalog_id), UNIQUE INDEX UNIQ_816D84444584665A (product_id), PRIMARY KEY(catalog_id, product_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('ALTER TABLE catalog_products ADD CONSTRAINT FK_816D8444CC3C66FC FOREIGN KEY (catalog_id) REFERENCES catalog (id)');
+        $this->addSql('ALTER TABLE catalog_products ADD CONSTRAINT FK_816D84444584665A FOREIGN KEY (product_id) REFERENCES product (id)');
     }
 
     public function down(Schema $schema) : void

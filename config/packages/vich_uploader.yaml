@@ -1,0 +1,9 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        catalog_file:
+            uri_prefix: /catalog
+            upload_destination: '%kernel.project_dir%/public/uploads/catalogs'
+            # Will rename uploaded files using a uniqueid as a prefix.
+            namer: Vich\UploaderBundle\Naming\OrignameNamer

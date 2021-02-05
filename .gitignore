@@ -67,6 +67,7 @@
 
 .idea
 .DS_Store
+
 ###> symfony/phpunit-bridge ###
 .phpunit
 .phpunit.result.cache

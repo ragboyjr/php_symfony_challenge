@@ -37,21 +37,27 @@ class CatalogMessageHandler implements MessageHandlerInterface
         if (!$catalog instanceof Catalog) {
             return;
         }
-
+        $this->logger->debug($this->workflow->can($catalog, 'handle'));
         if ($this->workflow->can($catalog, 'handle')) {
             //handle json file and import products
             $handled = $this->catalogManager->handle($catalog);
-
             if ($handled) { //handling ok, change state to 'imported'
-                $transition = 'handle';
-                $this->workflow->apply($catalog, $transition);
+                $this->workflow->apply($catalog,  'handle');
                 $this->entityManager->flush();
                 $this->bus->dispatch($message);
             }
+        } elseif ($this->workflow->can($catalog, 'sync')) {
+            //export products to csv in order to be synced by sftp
+            $synced = $this->catalogManager->export($catalog);
+
+            if ($synced) { //handling ok, change state to 'imported'
+                $this->workflow->apply($catalog,  'sync');
+                $this->entityManager->flush();
+                $this->bus->dispatch($message);
+            }
+
         } elseif ($this->logger) {
             $this->logger->debug('Dropping catalog message', ['catalog' => $catalog->getId(), 'state' => $catalog->getState()]);
         }
-
-        $this->entityManager->flush();
     }
 }

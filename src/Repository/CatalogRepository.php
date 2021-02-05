@@ -18,4 +18,14 @@ class CatalogRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Catalog::class);
     }
+
+    /**
+    * @return \Doctrine\ORM\QueryBuilder
+    */
+    private function getQueryBuilder()
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        return $qb;
+    }
 }

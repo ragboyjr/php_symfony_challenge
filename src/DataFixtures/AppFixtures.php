@@ -21,11 +21,11 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $catalog1 = new Catalog();
-        $catalog1->setFilePath($this->params->get('catalogsDir').'/catalog1.json');
+        $catalog1->setFilePath($this->params->get('catalogs_dir').'/catalog1.json');
         $manager->persist($catalog1);
 
         $catalog2 = new Catalog();
-        $catalog2->setFilePath($this->params->get('catalogsDir').'/catalog1.json');
+        $catalog2->setFilePath($this->params->get('catalogs_dir').'/catalog1.json');
         $catalog2->setState('imported');
         $manager->persist($catalog2);
 

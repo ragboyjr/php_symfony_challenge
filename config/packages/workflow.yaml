@@ -13,7 +13,11 @@ framework:
             places:
                 - submitted
                 - imported
+                - synced
             transitions:
                 handle:
                     from: submitted
                     to:   imported
+                sync:
+                    from: imported
+                    to:   synced
