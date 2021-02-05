@@ -28,13 +28,14 @@
         "symfony/security-csrf": "^5.0",
         "symfony/twig-bundle": "^5.0",
         "symfony/validator": "^5.0",
+        "symfony/web-server-bundle": "4.4",
         "symfony/workflow": "^5.0",
         "symfony/yaml": "^5.0",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/intl-extra": "^3",
         "twig/twig": "^2.12|^3.0",
-        "webmozart/assert": "^1.7",
-        "vich/uploader-bundle": "^1.12"
+        "vich/uploader-bundle": "^1.12",
+        "webmozart/assert": "^1.7"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
