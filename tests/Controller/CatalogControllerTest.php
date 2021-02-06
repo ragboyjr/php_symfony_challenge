@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\Catalog;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -35,7 +36,7 @@ class CatalogControllerTest extends WebTestCase
     }
 
 
-    public function testImport()
+    public function testNew()
     {
         $file = new UploadedFile(
             $this->client->getContainer()->getParameter('catalogs_dir').'/'.$this->uploadedFile,
@@ -43,22 +44,28 @@ class CatalogControllerTest extends WebTestCase
             'test/plain'
         );
 
-        //do call and get response
+        //go to catalog new view
         $crawler = $this->client->request(
             'GET',
             '/?entity=Catalog&action=new'
         );
+
         //fill form
         $form = $crawler->filter('#new-catalog-form')->form();
-        $form['catalog[file][file]'] = $file;
-        $this->client->submit($form);// submit the form
+        $form['catalog[file][file]'] = $file; //attach file
+        $this->client->submit($form); // submit the form
+
         //Asserts
         $this->assertTrue($this->client->getResponse() instanceof RedirectResponse);
         $this->client->followRedirect();
         $this->assertTrue($this->client->getResponse()->isSuccessful());
 
+        $lastInsertedCatalog = $this->entityManager->getRepository('App:Catalog')->findOneBy(
+            array(),
+            array('id' => 'DESC')
+        );
 
-        var_dump($this->client->getResponse()->getContent());
-        die();
+        $this->assertInstanceOf(Catalog::class, $lastInsertedCatalog);
+        $this->assertFileExists($this->client->getContainer()->getParameter('catalogs_dir').'/'.$lastInsertedCatalog->getFilePath());
     }
 }
