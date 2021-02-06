@@ -172,7 +172,17 @@ For extra credit, you could see about parallelizing the import process so that w
 
 ## Installation
 
-This project requires `mysql` database with `admin` user and `admin` password to running in the system. If you want other database engine just modify .env file
+This project requires `mysql` database with `admin` user and `admin` password to running in the system. If you want other database engine just modify .env file (`DATABASE_URL`)
+
+`php-amqp` extension is required for using `amqp` transport for handling messenger bus. If you want to configure another transport just change `MESSENGER_TRANSPORT_DSN` env variable (check user, password and host, for docs visit `https://symfony.com/doc/current/messenger.html#messenger-transports-config`)
+If you're on ubuntu run these for amqp:
+
+```
+sudo apt-get install php-amqp
+sudo apt-get install -y rabbitmq-server 
+sudo service apache2 restart
+```
+
 The sftp folder is `public/downloads/catalogs`, you can change the path at `config/services.yaml` parameter `ftp_dir`.
 
 Clone the repository and access to folder created, run composer and create database, load migrations and fixtures 
@@ -194,6 +204,7 @@ Start the built-in server, open messenger bus to consume async requests, go to a
 php bin/console server:start
 php bin/console messenger:consume async -vv
 ```
+
 - visit http://127.0.0.1:8000
 - Go to Catalogs list Add/remove catalogs
 - Add Catalog: this fires an event to messenger queue, to handle catalog file
