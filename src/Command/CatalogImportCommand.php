@@ -25,6 +25,11 @@ class CatalogImportCommand extends Command
 
     protected static $defaultName = 'app:catalog:import';
 
+    /**
+     * CatalogImportCommand constructor.
+     * @param CatalogRepository $catalogRepository
+     * @param MessageBusInterface $bus
+     */
     public function __construct(CatalogRepository $catalogRepository, MessageBusInterface $bus)
     {
         $this->catalogRepository = $catalogRepository;
@@ -39,6 +44,12 @@ class CatalogImportCommand extends Command
         ;
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     * Imports json files of catalogs in SUBMITTED and changes its state to IMPORTED
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -47,8 +58,8 @@ class CatalogImportCommand extends Command
 
         $count = count($catalogs);
         foreach ($catalogs as $catalog) {
-            //import json and create products
             try {
+                //queue event in messenger bus in order to be imported
                 $this->bus->dispatch(new CatalogMessage($catalog->getId()));
             } catch (\Exception $e) {
                 $io->error('An Exception has ocurred: '. $e->getMessage(), ['catalog' => $catalog->getId(), 'state' => $catalog->getState()]);

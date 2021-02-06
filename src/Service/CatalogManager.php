@@ -7,16 +7,48 @@ use App\Entity\Price;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use App\Service\ConversorManager;
 
+/**
+ * Class CatalogManager
+ * @package App\Service
+ *
+ * Service used to import/export catalog files
+ */
 class CatalogManager
 {
+    /**
+     * @var string
+     */
     private $catalogsDir;
+
+    /**
+     * @var string
+     */
     private $ftpDir;
+
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
+
+    /**
+     * @var EntityManagerInterface
+     */
     private $entityManager;
+
+    /**
+     * @var \App\Service\ConversorManager
+     */
     private $conversorManager;
 
+    /**
+     * CatalogManager constructor.
+     * @param string $catalogsDir
+     * @param string $ftpDir
+     * @param LoggerInterface|null $logger
+     * @param EntityManagerInterface $entityManager
+     * @param \App\Service\ConversorManager $conversorManager
+     */
     public function __construct(string $catalogsDir, string $ftpDir, LoggerInterface $logger = null, EntityManagerInterface $entityManager, ConversorManager $conversorManager)
     {
         $this->catalogsDir = $catalogsDir;
@@ -42,15 +74,20 @@ class CatalogManager
 
                 //iterate array elements an add new product each
                 foreach ($jsonData as $x => $row) {
+                    //create product
                     $product = new Product();
                     $product->setStyleNumber($row['styleNumber']);
                     $product->setName($row['name']);
+
+                    //create price
                     $price = new Price();
                     $price->setCurrency($row['price']['currency']);
                     $price->setAmount($row['price']['amount']);
+
+                    //set price to created product
                     $product->setPrice($price);
 
-                    //If product have a diferent currency than USD convert do proccess convertion
+                    //If product have a different currency than USD convert it
                     if ($price->getCurrency() != 'USD') {
                         $price->setAmount($this->conversorManager->convertProductPrice($product, 'USD'));
                         $price->setCurrency('USD');
@@ -59,6 +96,8 @@ class CatalogManager
                     $this->entityManager->persist($price);
 
                     $product->setImages($row['images']);
+
+                    //add new product to the importing catalog
                     $catalog->addProduct($product);
 
                     $this->entityManager->persist($product);
@@ -85,23 +124,28 @@ class CatalogManager
     public function export(Catalog $catalog): bool
     {
         try {
+            //check if directory to store csv files is created, if not create it
             if (!file_exists($this->ftpDir)) {
                 mkdir($this->ftpDir, 0777);
             }
 
+            //create blank csv file in write mode
             $handle = fopen($this->ftpDir.'/'.$catalog->getId().'.csv', 'w');
 
             // Find all catalog products to export
             $products = $catalog->getProducts();
 
-            // Iterate products
             $csv = "";
 
+            // Iterate products
             foreach ($products as $product) {
                 $csv.= implode(",", array_values($product->toArray()))."\n"; // The fields to be displayed
             }
 
+            //write data to file
             fwrite($handle, $csv);
+
+            //close handle
             fclose($handle);
 
             return true;

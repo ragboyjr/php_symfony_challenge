@@ -3,6 +3,8 @@
 namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Class CatalogControllerTest
@@ -17,15 +19,17 @@ class CatalogControllerTest extends WebTestCase
 {
     private $uploadedFile;
 
+    private $client;
+
     public function setUp(): void
     {
-        $kernel = self::bootKernel();
+        $this->client = static::createClient();
 
-        $this->entityManager = $kernel->getContainer()
+        $this->entityManager = $this->client->getContainer()
             ->get('doctrine')
             ->getManager();
 
-        $this->uploadedFile = $kernel->getContainer()->getParameter('catalogs_dir').'/catalog1.json';
+        $this->uploadedFile = 'catalog1.json';
 
         parent::setUp();
     }
@@ -33,26 +37,28 @@ class CatalogControllerTest extends WebTestCase
 
     public function testImport()
     {
-        $_FILES = [
-            'filename' => [
-                'name' => $this->uploadedFile,
-                'type' => 'text/plain',
-                'size' => 211,
-                'tmp_name' => $this->uploadedFile,
-                'error' => 0
-            ]
-        ];
-
-        //do call and get response and client
-        list($response, $client) = $this->call(
-            'POST',
-            '/?entity=Catalog&action=list',
-            [],
-            $_FILES,
-            []
+        $file = new UploadedFile(
+            $this->client->getContainer()->getParameter('catalogs_dir').'/'.$this->uploadedFile,
+            $this->uploadedFile,
+            'test/plain'
         );
 
-        var_dump($client->getResponse()->getStatusCode());
+        //do call and get response
+        $crawler = $this->client->request(
+            'GET',
+            '/?entity=Catalog&action=new'
+        );
+        //fill form
+        $form = $crawler->filter('#new-catalog-form')->form();
+        $form['catalog[file][file]'] = $file;
+        $this->client->submit($form);// submit the form
+        //Asserts
+        $this->assertTrue($this->client->getResponse() instanceof RedirectResponse);
+        $this->client->followRedirect();
+        $this->assertTrue($this->client->getResponse()->isSuccessful());
+
+
+        var_dump($this->client->getResponse()->getContent());
         die();
     }
 }

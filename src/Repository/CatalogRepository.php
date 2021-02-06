@@ -14,18 +14,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CatalogRepository extends ServiceEntityRepository
 {
+    /**
+     * CatalogRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Catalog::class);
-    }
-
-    /**
-    * @return \Doctrine\ORM\QueryBuilder
-    */
-    private function getQueryBuilder()
-    {
-        $qb = $this->createQueryBuilder('c');
-
-        return $qb;
     }
 }

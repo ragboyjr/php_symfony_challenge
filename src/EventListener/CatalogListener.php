@@ -39,6 +39,7 @@ class CatalogListener
 
     public function onEasyAdminPrePersist(GenericEvent $event)
     {
+        //check if directory to store json files is created, if not create it
         if (!file_exists($this->catalogsDir)) {
             mkdir($this->catalogsDir, 0777);
         }
@@ -52,6 +53,7 @@ class CatalogListener
 
         $this->catalog = $event->getSubject();
 
+        //queue event in messenger bus, in order to be handled
         $this->bus->dispatch(new CatalogMessage($this->catalog->getId()));
     }
 

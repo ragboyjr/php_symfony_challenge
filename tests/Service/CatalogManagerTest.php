@@ -3,8 +3,6 @@
 namespace App\Tests\Service;
 
 use App\Entity\Catalog;
-use App\Entity\Price;
-use App\Entity\Product;
 use App\Service\CatalogManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 

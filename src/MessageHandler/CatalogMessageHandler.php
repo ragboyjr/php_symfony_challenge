@@ -13,13 +13,45 @@ use Symfony\Component\Workflow\WorkflowInterface;
 
 class CatalogMessageHandler implements MessageHandlerInterface
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $entityManager;
+
+    /**
+     * @var CatalogRepository
+     */
     private $catalogRepository;
+
+    /**
+     * @var CatalogManager
+     */
     private $catalogManager;
+
+    /**
+     * @var MessageBusInterface
+     */
     private $bus;
+
+    /**
+     * @var WorkflowInterface
+     */
     private $workflow;
+
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
+    /**
+     * CatalogMessageHandler constructor.
+     * @param EntityManagerInterface $entityManager
+     * @param CatalogRepository $catalogRepository
+     * @param CatalogManager $catalogManager
+     * @param MessageBusInterface $bus
+     * @param WorkflowInterface $catalogStateMachine
+     * @param LoggerInterface|null $logger
+     */
     public function __construct(EntityManagerInterface $entityManager, CatalogRepository $catalogRepository, CatalogManager $catalogManager, MessageBusInterface $bus, WorkflowInterface $catalogStateMachine, LoggerInterface $logger = null)
     {
         $this->entityManager = $entityManager;
@@ -30,6 +62,9 @@ class CatalogMessageHandler implements MessageHandlerInterface
         $this->logger = $logger;
     }
 
+    /**
+     * @param CatalogMessage $message
+     */
     public function __invoke(CatalogMessage $message)
     {
         $catalog = $this->catalogRepository->find($message->getId());

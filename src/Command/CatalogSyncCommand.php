@@ -25,6 +25,11 @@ class CatalogSyncCommand extends Command
 
     protected static $defaultName = 'app:catalog:sync';
 
+    /**
+     * CatalogSyncCommand constructor.
+     * @param CatalogRepository $catalogRepository
+     * @param MessageBusInterface $bus
+     */
     public function __construct(CatalogRepository $catalogRepository, MessageBusInterface $bus)
     {
         $this->catalogRepository = $catalogRepository;
@@ -39,6 +44,12 @@ class CatalogSyncCommand extends Command
         ;
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     * Exports csv of IMPORTED catalogs and changes its state to SYNCED
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -47,8 +58,8 @@ class CatalogSyncCommand extends Command
 
         $count = count($catalogs);
         foreach ($catalogs as $catalog) {
-            //export csv and change state to synced
             try {
+                //queue event in messenger bus in order to be imported
                 $this->bus->dispatch(new CatalogMessage($catalog->getId()));
             } catch (\Exception $e) {
                 $io->error('An Exception has ocurred: '. $e->getMessage(), ['catalog' => $catalog->getId(), 'state' => $catalog->getState()]);

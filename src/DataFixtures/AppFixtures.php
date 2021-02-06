@@ -11,13 +11,23 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class AppFixtures extends Fixture
 {
+    /**
+     * @var ParameterBagInterface
+     */
     private $params;
 
+    /**
+     * AppFixtures constructor.
+     * @param ParameterBagInterface $params
+     */
     public function __construct(ParameterBagInterface $params)
     {
         $this->params = $params;
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     public function load(ObjectManager $manager)
     {
         $catalog1 = new Catalog();

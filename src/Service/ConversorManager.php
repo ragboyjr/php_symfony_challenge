@@ -13,8 +13,15 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class ConversorManager
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $manager;
 
+    /**
+     * ConversorManager constructor.
+     * @param EntityManagerInterface $manager
+     */
     public function __construct(EntityManagerInterface $manager)
     {
         $this->manager = $manager;
