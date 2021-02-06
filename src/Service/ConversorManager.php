@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Price;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -47,6 +48,10 @@ class ConversorManager
     public function convertProductPrice(Product $product, $currencyToConvert)
     {
         //get exchange rates and validate third party service return valid information
+        if (!$product->getPrice() instanceof Price) {
+            throw new \Exception("Price not set");
+        }
+
         $exchange = $this->getExchange($product->getPrice()->getCurrency(), $currencyToConvert);
 
         if (!isset($exchange['rates'][$currencyToConvert])) {

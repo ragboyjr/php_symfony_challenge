@@ -76,26 +76,42 @@ class CatalogManager
                 foreach ($jsonData as $x => $row) {
                     //create product
                     $product = new Product();
-                    $product->setStyleNumber($row['styleNumber']);
-                    $product->setName($row['name']);
 
-                    //create price
-                    $price = new Price();
-                    $price->setCurrency($row['price']['currency']);
-                    $price->setAmount($row['price']['amount']);
-
-                    //set price to created product
-                    $product->setPrice($price);
-
-                    //If product have a different currency than USD convert it
-                    if ($price->getCurrency() != 'USD') {
-                        $price->setAmount($this->conversorManager->convertProductPrice($product, 'USD'));
-                        $price->setCurrency('USD');
+                    if (!empty($row['styleNumber'])) {
+                        $product->setStyleNumber($row['styleNumber']);
                     }
 
-                    $this->entityManager->persist($price);
+                    if (!empty($row['name'])) {
+                        $product->setName($row['name']);
+                    }
 
-                    $product->setImages($row['images']);
+                    if (!empty($row['price'])) {
+                        //create price
+                        $price = new Price();
+
+                        if (!empty($row['price']['currency'])) {
+                            $price->setCurrency($row['price']['currency']);
+                        }
+
+                        if (!empty($row['price']['amount'])) {
+                            $price->setAmount($row['price']['amount']);
+                        }
+
+                        //set price to created product
+                        $product->setPrice($price);
+
+                        //If product have a different currency than USD convert it
+                        if (!empty($row['price']['amount']) && !empty($row['price']['currency'])) {
+                            if ($price->getCurrency() != 'USD') {
+                                $price->setAmount($this->conversorManager->convertProductPrice($product, 'USD'));
+                                $price->setCurrency('USD');
+                            }
+                        }
+                    }
+
+                    if (!empty($row['images'])) {
+                        $product->setImages($row['images']);
+                    }
 
                     //add new product to the importing catalog
                     $catalog->addProduct($product);

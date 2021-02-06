@@ -14,11 +14,6 @@ class CatalogManagerTest extends KernelTestCase
     private $entityManager;
 
     /**
-     * @var Catalog
-     */
-    private $catalog;
-
-    /**
      * @var CatalogManager
      */
     private $catalogManager;
@@ -37,11 +32,6 @@ class CatalogManagerTest extends KernelTestCase
         $this->catalogManager = $kernel->getContainer()
             ->get('catalog_manager');
 
-        $this->catalog = new Catalog();
-        $this->catalog->setFilePath('catalog1.json');
-        $this->entityManager->persist($this->catalog);
-        $this->entityManager->flush();
-
         parent::setUp();
     }
 
@@ -56,12 +46,15 @@ class CatalogManagerTest extends KernelTestCase
      */
     public function testHandle()
     {
+        $catalog = new Catalog();
+        $catalog->setFilePath('tests/catalogSuccess.json');
+
         //test handle method
-        $answer = $this->catalogManager->handle($this->catalog);
+        $answer = $this->catalogManager->handle($catalog);
 
         //assert
         $this->assertTrue($answer);
-        $this->assertGreaterThan(0, count($this->catalog->getProducts()));
+        $this->assertGreaterThan(0, count($catalog->getProducts()));
     }
 
     /**
@@ -75,30 +68,19 @@ class CatalogManagerTest extends KernelTestCase
      */
     public function testExport()
     {
+        $catalog = new Catalog();
+        $catalog->setFilePath('catalogSuccess.json');
+        
         //test export method
-        $answer = $this->catalogManager->export($this->catalog);
+        $answer = $this->catalogManager->export($catalog);
 
         //assert
         $this->assertTrue($answer);
-        $this->assertFileExists($this->catalogManager->getFtpDir().'/'.$this->catalog->getId().'.csv');
-    }
-
-    public function tearDown(): void
-    {
-        $this->entityManager->clear();
+        $this->assertFileExists($this->catalogManager->getFtpDir().'/'.$catalog->getId().'.csv');
 
         //unlink generated csv
-        if (file_exists($this->catalogManager->getFtpDir().'/'.$this->catalog->getId().'.csv')) {
-            unlink($this->catalogManager->getFtpDir().'/'.$this->catalog->getId().'.csv');
+        if (file_exists($this->catalogManager->getFtpDir().'/'.$catalog->getId().'.csv')) {
+            unlink($this->catalogManager->getFtpDir().'/'.$catalog->getId().'.csv');
         }
-
-        //set file path to '' in order to use de json file for another pourposes
-        $this->catalog->setFilePath('');
-        $this->entityManager->persist($this->catalog);
-
-        $this->entityManager->remove($this->catalog);
-        $this->entityManager->flush();
-
-        parent::tearDown();
     }
 }
