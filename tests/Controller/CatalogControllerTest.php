@@ -192,9 +192,7 @@ class CatalogControllerTest extends WebTestCase
         $this->client->submit($form); // submit the form
 
         //Asserts
-        $this->assertTrue($this->client->getResponse() instanceof RedirectResponse);
-        $this->client->followRedirect();
-        $this->assertFalse($this->client->getResponse()->isSuccessful());
+        $this->assertStringContainsString('The file is too large', $this->client->getResponse()->getContent());
     }
 
     /**
@@ -229,6 +227,16 @@ class CatalogControllerTest extends WebTestCase
         //Asserts
         $this->assertTrue($this->client->getResponse() instanceof RedirectResponse);
         $this->client->followRedirect();
-        $this->assertFalse($this->client->getResponse()->isSuccessful());
+        $this->assertTrue($this->client->getResponse()->isSuccessful());
+        sleep(5); //wait for the messenger to handle and sync the file (or not)
+        $lastInsertedCatalog = $this->entityManager->getRepository('App:Catalog')->findOneBy(
+            array(),
+            array('id' => 'DESC')
+        );
+
+        $this->assertInstanceOf(Catalog::class, $lastInsertedCatalog);
+
+        //cannot handle file because invalid data, stay at submitted state
+        $this->assertEquals(Catalog::SUBMITTED_STATE, $lastInsertedCatalog->getState());
     }
 }

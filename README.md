@@ -172,12 +172,43 @@ For extra credit, you could see about parallelizing the import process so that w
 
 ## Installation
 
-TODO
+This project requires `mysql` database with `admin` user and `admin` password to running in the system. If you want other database engine just modify .env file
+The sftp folder is `public/downloads/catalogs`, you can change the path at `config/services.yaml` parameter `ftp_dir`.
+
+Clone the repository and access to folder created, run composer and create database, load migrations and fixtures 
+
+```
+git clone https://github.com/belenalmazan/php_symfony_challenge.git
+cd php_symfony_challenge
+composer install
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+php bin/console doctrine:fixtures:load
+```
 
 ## Usage
 
-TODO
+Start the built-in server, open messenger bus to consume async requests, go to admin dashboard and create a new Catalog
+
+```
+php bin/console server:start
+php bin/console messenger:consume async -vv
+```
+- visit http://127.0.0.1:8000
+- Go to Catalogs list Add/remove catalogs
+- Add Catalog: this fires an event to messenger queue, to handle catalog file
+- Reload Catalogs list page, check catalog is synced, and products are created (by count products table or you can go to Products list view and check it), and csv exported to a self contained file inside `ftp_dir`
+- Remove catalog, check file is removed from `public/uploads/catalogs`, but products continue persisted 
 
 ## Testing
 
-TODO
+Can run testing to check all works well
+Messenger bus must be opened (`php bin/console messenger:consume async -vv`)
+
+```
+php bin/phpunit
+```
+
+## Author
+
+Maria Belen Almazan 05/02/2021
