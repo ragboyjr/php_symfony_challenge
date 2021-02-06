@@ -224,6 +224,9 @@
             "config/bootstrap.php"
         ]
     },
+    "symfony/css-selector": {
+        "version": "v5.2.3"
+    },
     "symfony/debug-bundle": {
         "version": "4.1",
         "recipe": {
