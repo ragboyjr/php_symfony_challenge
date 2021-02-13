@@ -10,4 +10,4 @@ jobs:
       - name: Start Docker Containers
         run: docker-compose up -d
       - name: Run Tests
-        run: docker-compose exec -T app wait-for-it.sh localhost:80 -- composer test
+        run: docker-compose exec -T app wait-for-it.sh -t 300 localhost:80 -- composer test
