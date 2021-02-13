@@ -9,5 +9,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Start Docker Containers
         run: docker-compose up -d
+      - name: Debug 1
+        run: docker-compose exec -T app wait-for-it.sh -t 300 localhost:80
+      - name: Debug 2
+        run: docker-compose logs -t
       - name: Run Tests
         run: docker-compose exec -T app wait-for-it.sh -t 300 localhost:80 -- composer test
