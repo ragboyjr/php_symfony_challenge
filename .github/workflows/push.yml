@@ -1,0 +1,15 @@
+name: Push
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Start Docker Containers
+        run: docker-compose up -d
+      - name: Setup Repo
+        run: docker-compose exec -T app composer setup
+      - name: Run Tests
+        run: docker-compose exec -T app composer test

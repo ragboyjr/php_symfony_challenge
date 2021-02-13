@@ -142,7 +142,7 @@ class CatalogManager
         try {
             //check if directory to store csv files is created, if not create it
             if (!file_exists($this->ftpDir)) {
-                mkdir($this->ftpDir, 0777);
+                mkdir($this->ftpDir, 0777, true);
             }
 
             //create blank csv file in write mode

@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+  app:
+    build: ./docker
+    volumes:
+      - ./:/var/www/html:delegated
+    ports:
+      - 80:80
+  mysql:
+    image: mysql:8.0.23
+    environment:
+      MYSQL_ROOT_PASSWORD: password123
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+  rabbitmq:
+    image: rabbitmq:3.8.11
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest

@@ -40,6 +40,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "^5.0",
         "symfony/debug-bundle": "^5.2",
         "symfony/maker-bundle": "^1.28",
@@ -83,7 +84,14 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "setup": [
+            "@composer install",
+            "bin/console doctrine:database:create --if-not-exists",
+            "bin/console doctrine:migrations:migrate -n",
+            "bin/console doctrine:fixtures:load -n"
+        ],
+        "test": "phpunit --testdox"
     },
     "conflict": {
         "symfony/symfony": "*"
