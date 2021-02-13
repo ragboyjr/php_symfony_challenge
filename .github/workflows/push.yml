@@ -9,7 +9,5 @@ jobs:
       - uses: actions/checkout@v2
       - name: Start Docker Containers
         run: docker-compose up -d
-      - name: Setup Repo
-        run: docker-compose exec -T app composer setup
       - name: Run Tests
-        run: docker-compose exec -T app composer test
+        run: docker-compose exec -T app wait-for-it.sh localhost:80 -- composer test
